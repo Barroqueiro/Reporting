@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <META charset="UTF-8" />
+    <title>
+        Zap Report
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>  </head>
+<body>
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">Zap Report</h1>
+    </div>
+  </div>
+  <div class="container">
+    {% for site in vulns %}
+          <div class="card" style="display: block;">
+            <div class="card-body">
+              <h5 class="card-title">{{ site["name"] }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Host: {{ site["host"] }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted">Port: {{ site["port"] }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted">SSL: {{ site["ssl"] }}</h6>
+            </div>
+          </div>
+          <div>&nbsp;</div>
+          {% for key in site["vulns"] %}
+            {% if site["vulns"][key] != [] %}
+              <a class="btn btn-outline-primary btn-block" data-bs-toggle="collapse" href="#{{key}}" role="button" aria-expanded="false" aria-controls="collapseExample" style="background-color: {{ colors[key] }};width: 100%;font-weight: bold;color:black; border-color: black">
+                  Found {{ site["vulns"][key] | count  }} {{ key.lower().capitalize() }} Severity Vulnerabilities
+              </a> 
+              <div>&nbsp;</div>
+              <div class="collapse" id="{{key}}">
+                {% for vuln in site["vulns"][key] %}
+                        <table class="table table-bordered table-hover">
+                          <a class="btn btn-outline-primary" data-bs-toggle="collapse" href="#{{ key }}Vulnerability{{ loop.index }}" role="button" aria-expanded="true" aria-controls="collapseExample" style="background-color: {{ colors[key] }};width: 100%;font-weight: bold;color:black;; border-color: black">
+                                {{ key.lower().capitalize() }} Vulnerability {{ loop.index }}
+                          </a>
+                          <tbody class="collapse show" id="{{ key }}Vulnerability{{ loop.index }}">
+                            <tr>
+                              <td >Id</td>
+                              <td>{{ vuln["id"] }}</td>
+                            </tr>
+                            <tr>
+                              <td>Name</td>
+                              <td>{{ vuln["name"] }}</td>
+                            </tr>
+                            <tr>
+                              <td>Severity</td>
+                              <td>{{ key }}</td>
+                            </tr>
+                            <tr>
+                              <td>Confidence</td>
+                              <td>{{ vuln["confidence"] }}</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="{{ vuln['instances']|length }}">Instances</td>
+                                <td>
+                                <table class="table table-bordered table-hover">
+                                  <tbody>
+                                    <tr>
+                                      <td>URL</td>
+                                      <td>{{ vuln["instances"][0]["uri"] }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Method</td>
+                                      <td>{{ vuln["instances"][0]["method"] }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Attack</td>
+                                      <td>{{ vuln["instances"][0]["attack"] }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Evidence</td>
+                                      <td>{{ vuln["instances"][0]["evidence"] }}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                </td>
+                            </tr>
+                            {% for instance in vuln["instances"][1:] %}
+                            <tr>
+                                <td>
+                                <table class="table table-bordered table-hover">
+                                  <tbody>
+                                    <tr>
+                                      <td>URL</td>
+                                      <td>{{ instance["uri"] }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Method</td>
+                                      <td>{{ instance["method"] }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Attack</td>
+                                      <td>{{ instance["attack"] }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Evidence</td>
+                                      <td>{{ instance["evidence"] }}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                              <td>Solution</td>
+                              <td>{{ vuln["solution"] }}</td>
+                            </tr>
+                            <tr>
+                              <td>References</td>
+                              <td>
+                              {% for reference in vuln["references"][1:] %}
+                                  <a href="{{ reference.replace('<p>','').replace('</p>','') }}.html">{{ reference.replace("<p>",'').replace("</p>",'') }} </a>
+                              {% endfor %}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>CWE</td>
+                              {% if vuln["cwe"] != "NOT APPLICABLE" %}
+                                <td><a href="https://cwe.mitre.org/data/definitions/{{ vuln['cwe'] }}.html"> CWE- {{ vuln["cwe"] }} </a><br></td>
+                              {% endif %}
+                              {% if vuln["cwe"] == "NOT APPLICABLE" %}
+                                <td>{{ cwe }}</td>
+                              {% endif %}
+                            </tr>
+                          </tbody>
+                        </table>
+                {% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+  </div>
+  <div class="text-center p-3" style="background-color:white;">
+    <p>{{ today }}</p>
+  </div>
+  </body>
+</html>

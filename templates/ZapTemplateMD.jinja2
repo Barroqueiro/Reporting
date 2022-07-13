@@ -1,0 +1,31 @@
+{% for site in vulns %}
+{% for key in site["vulns"] %}
+{% if site["vulns"][key] != [] %}
+# {{ key.lower().capitalize() }}
+{% for vuln in site["vulns"][key] %}
+## {{ vuln["name"].replace(" - ","-").replace("-"," ").replace("(","").replace(")","") }}
+
+### Solution
+
+{{ vuln["solution"].replace("<p>",'\n\n').replace("</p>",'') }}
+
+### Instances
+
+[Instances](#{{ vuln["name"].replace(" - ","-").replace("-"," ").replace(" ","-").replace("(","").replace(")","").lower() }}-instances)
+{% if vuln["references"][1:] != [] %}
+### References
+{% endif %}
+{% for reference in vuln["references"][1:] %}
+[{{ reference.replace("<p>",'').replace("</p>",'') }}]({{ reference.replace("<p>",'\n\n').replace("</p>",'') }}.html)
+{% endfor %}
+### CWE
+{% if vuln["cwe"] != "NOT APPLICABLE" %}
+[{{ vuln["cwe"] }}](https://cwe.mitre.org/data/definitions/{{ vuln['cwe'] }}.html)
+{% endif %}
+{% if vuln["cwe"] == "NOT APPLICABLE" %}
+{{ vuln["cwe"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endfor %}

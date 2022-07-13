@@ -1,0 +1,12 @@
+{% for key in vulns %}
+{% if vulns[key] != {} %}
+{% for vuln in vulns[key] %}
+
+## {{ key.lower().capitalize() }} Vulnerability {{ loop.index }} instances
+
+```
+{{ vulns[key][vuln]["tree"] }} 
+```
+{% endfor %}
+{% endif %}
+{% endfor %}

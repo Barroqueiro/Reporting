@@ -1,0 +1,47 @@
+{% if vulns["Issues"] != [] %}
+# Prospector Issues
+{% for vuln in vulns["Issues"] %}
+## Issue {{ loop.index }}
+### Tool
+
+{{ vuln["tool"] }}
+
+### Code
+
+{{ vuln["code"] }}
+
+### Location
+
+{{ vuln["line"] }}
+
+### Message
+
+{{ vuln["message"] }}
+
+{% endfor %}
+{% endif %}
+
+# Radon Reporting
+                            
+## Radon legend
+
+|   |                                         |
+|---|-----------------------------------------|
+| A | low - simple block                      |
+| B | low - well structured and stable block  |
+| C | moderate - slightly complex block       |
+| D | more than moderate - more complex block |
+| E | high - complex block, alarming          |
+| F | very high - error-prone, unstable block |
+
+## Scores
+
+{% for score in radon %}
+{% if radon[score] != [] %}
+### {{ score }} Score Components 
+
+{% for rad in radon[score] %}
+- {{ rad["block" ]}} {{ rad["name"] }} at line {{ rad["line"] }}
+{% endfor %}
+{% endif %}
+{% endfor %}

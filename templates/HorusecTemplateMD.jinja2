@@ -1,0 +1,14 @@
+{% for key in vulns %}
+{% if vulns[key] != {} %}
+
+# {{ key.lower().capitalize() }}
+{% for vuln in vulns[key] %}
+## {{ key.lower().capitalize() }} Vulnerability {{ loop.index }}
+{{ vuln.replace("## Recommendation","### Recommendation").replace("```","\n```\n").replace("$","```$```").replace("\\","```\\```").replace("Cwe Links","\nCwe Links").replace("PrimaryURL","\nPrimaryURL").replace("Problem: ","### Problem: ") }}
+
+### Instances
+
+[Instances](#{{ key.lower() }}-vulnerability-{{ loop.index }}-instances)
+{% endfor %}
+{% endif %}
+{% endfor %}                  

@@ -1,0 +1,15 @@
+{% for key in vulns %}
+{% if vulns[key] != [] %}
+# {{ key.lower().capitalize() }}
+{% for vuln in vulns[key] %}
+## {{ vuln["title"] }}
+
+### Alerts
+
+{% for alert in vuln["alerts"] %}
+- {{ alert }}
+{% endfor %}
+
+{% endfor %}
+{% endif %}
+{% endfor %}

@@ -1,0 +1,29 @@
+{% for key in vulns %}
+{% if vulns[key] != {} %}
+# {{ key.lower().capitalize() }}
+{% for vuln in vulns[key] %}
+## {{ vuln }}
+
+### Packages
+
+{{ ', '.join(vulns[key][vuln]["pkg_name"]) }}
+
+### Description
+
+{{ vulns[key][vuln]["description"] }}
+
+### Version
+
+| Installed | Fixed |
+|---|---|
+|  {{ vulns[key][vuln]["installed_version"] }} | {{ vulns[key][vuln]["fixed_version"] }} |
+
+### CWEs
+{% if cwe != [] %}
+{% for cwe in vulns[key][vuln]["cwes"] %}
+[{{ cwe }}](https://cwe.mitre.org/data/definitions/{{ cwe }}.html)
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
