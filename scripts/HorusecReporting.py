@@ -3,6 +3,7 @@
 import re
 import json
 import argparse
+from unicodedata import category
 from datetime import datetime
 from modules.tree import start
 from jinja2 import Environment, FileSystemLoader
@@ -31,6 +32,11 @@ def parse_horusec_json(vuln_list):
         details = vuln["details"].replace("* Possible vulnerability detected: ","\n\n")
         details = re.sub('\([1-9]*/[1-9]*\)',"Problem: ",details)
         details = details.encode("ascii","ignore").decode()
+        temp = details
+        details = ""
+        for d in temp:
+            if category(d) != "Cc":
+                details += d
 
         if details in vulns_by_severity[severity]:
             vulns_by_severity[severity][details]["list_instances"].append({"location":location,"hash":hash})
