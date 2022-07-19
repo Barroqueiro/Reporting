@@ -30,7 +30,7 @@ def parse_horusec_json(vuln_list):
         severity = vuln["severity"]
         details = vuln["details"].replace("* Possible vulnerability detected: ","\n\n")
         details = re.sub('\([1-9]*/[1-9]*\)',"Problem: ",details)
-
+        details = details.encode("ascii","ignore").decode()
 
         if details in vulns_by_severity[severity]:
             vulns_by_severity[severity][details]["list_instances"].append({"location":location,"hash":hash})
