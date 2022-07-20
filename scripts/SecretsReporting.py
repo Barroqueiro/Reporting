@@ -62,8 +62,11 @@ def main():
     with open(config["json"],"r", encoding="UTF-8") as secrets:
         data = json.loads(secrets.read())
 
-    with open(config["ignore"],"r", encoding="UTF-8") as ignore:
-        ig = ignore.read().split("\n")
+    try:
+        with open(config["ignore"],"r", encoding="UTF-8") as ignore:
+            ig = ignore.read().split("\n")
+    except:
+        ig = []
 
     today = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     secrets,ret = parse_secrets_json(data,ig)
