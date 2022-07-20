@@ -8,6 +8,8 @@ from datetime import datetime
 from modules.tree import start
 from jinja2 import Environment, FileSystemLoader
 
+ALLOWED_CHARS = ["\n","\t","\r","\0"]
+
 def parse_horusec_json(vuln_list):
     """
     parse_horusec_json parses a json output for a horusec scan, and turns it into a dictionary containing vulnerabilities split by their severity, 
@@ -30,12 +32,12 @@ def parse_horusec_json(vuln_list):
         hash = vuln["vulnHash"]
         severity = vuln["severity"]
         details = vuln["details"].replace("* Possible vulnerability detected: ","\n\n")
-        details = re.sub('\([1-9]*/[1-9]*\)',"\nProblem:\n",details)
+        details = re.sub('\([1-9]*/[1-9]*\)',"Problem: ",details)
         details = details.encode("ascii","ignore").decode()
         temp = details
         details = ""
         for d in temp:
-            if category(d) != "Cc":
+            if category(d) != "Cc" or d in ALLOWED_CHARS:
                 details += d
 
         if details in vulns_by_severity[severity]:
