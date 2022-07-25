@@ -7,10 +7,10 @@
 ### Instances
 {% for instance in vuln["instances"] %}
 
-- Method:  {{ instance["method"] }}
-- URL: {{ instance["uri"] }}
-- Attack: {{ instance["attack"] }}
-- Evidence: {{ instance["evidence"] }}
+- Method:  {{ instance["method"].replace("#","\#") }}
+- URL: {{ instance["uri"].replace("#","\#") }}
+- Attack: {{ instance["attack"].replace("#","\#") }}
+- Evidence: {{ instance["evidence"].replace("#","\#") }}
 
 ------------------
 {% endfor %}
